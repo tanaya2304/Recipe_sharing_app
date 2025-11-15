@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TasteLog Premium 🍴 - Share, Discover, Cook</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- ====== LANDING PAGE ====== -->
+<section id="landing" class="landing">
+  <!-- Floating Food Emojis -->
+  <div class="floating-emojis">
+    <div class="emoji">🍕</div>
+    <div class="emoji">🍰</div>
+    <div class="emoji">🍜</div>
+    <div class="emoji">🍔</div>
+    <div class="emoji">🍣</div>
+    <div class="emoji">🥗</div>
+    <div class="emoji">🍝</div>
+    <div class="emoji">🌮</div>
+    <div class="emoji">🍱</div>
+  </div>
+
+  <nav class="landing-nav">
+    <h1 class="logo"><i class="fas fa-utensils"></i> TasteLog</h1>
+    <div class="nav-buttons">
+      <button id="loginBtnNav" class="nav-btn">Login</button>
+      <button id="signupBtnNav" class="nav-btn">Sign Up</button>
+    </div>
+  </nav>
+
+  <div class="landing-content">
+    <h1>Welcome to TasteLog Premium 🍓</h1>
+    <p>
+      The ultimate recipe-sharing platform for food lovers worldwide.<br>
+      Discover mouth-watering dishes, share your culinary masterpieces,<br>
+      and join a community of passionate chefs!
+    </p>
+    <button id="getStarted" class="primary-btn ripple">Get Started</button>
+  </div>
+</section>
+
+<!-- ====== AUTH SECTION ====== -->
+<section id="auth" class="auth-section hidden">
+  <div class="auth-container">
+    <h2 id="authTitle">Login</h2>
+    <form id="authForm" autocomplete="on">
+      <input id="email" type="email" placeholder="Email Address" autocomplete="email">
+      <input id="password" type="password" placeholder="Password" autocomplete="current-password">
+      <button type="button" id="authSubmit" class="ripple">Login</button>
+    </form>
+    <p id="switchAuth">
+      Don't have an account? <span>Sign up</span>
+    </p>
+  </div>
+</section>
+
+<!-- ====== MAIN APP ====== -->
+<section id="mainApp" class="hidden">
+  
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">
+      <i class="fas fa-utensils"></i>
+      <span>TasteLog</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#" id="homeLink">Home</a></li>
+      <li><a href="#" id="dashboardLink">Dashboard</a></li>
+      <li><a href="#" id="exploreLink">Explore</a></li>
+      <li><a href="#" id="postRecipeLink">Post Recipe</a></li>
+    </ul>
+    <div class="profile">
+      <!-- Dark Mode Toggle -->
+      <button id="darkModeToggle" class="dark-mode-toggle">
+        <i class="fas fa-moon"></i>
+      </button>
+      
+      <!-- Notifications -->
+      <div style="position: relative;">
+        <i class="fas fa-bell" id="notificationIcon" style="font-size: 1.5rem; cursor: pointer; color: var(--text-primary);"></i>
+        <span class="notification-badge" id="notificationCount">0</span>
+      </div>
+      
+      <!-- Profile -->
+      <i class="fas fa-user-circle" id="profileIcon"></i>
+      <div class="profile-menu" id="profileMenu">
+        <a href="#" id="myProfileBtn">
+          <i class="fas fa-user"></i> My Profile
+        </a>
+        <a href="#" id="myRecipesBtn">
+          <i class="fas fa-book"></i> My Recipes
+        </a>
+        <a href="#" id="favoritesBtn">
+          <i class="fas fa-heart"></i> Favorites
+        </a>
+        <a href="#" id="settingsBtn">
+          <i class="fas fa-cog"></i> Settings
+        </a>
+        <a href="#" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search recipes, ingredients, or cuisines...">
+    <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
+  </div>
+
+  <!-- ====== DASHBOARD VIEW (Premium Analytics) ====== -->
+  <div id="dashboardView" class="dashboard hidden">
+    <div class="dashboard-header">
+      <h1>Your Dashboard 📊</h1>
+      <p class="dashboard-subtitle">Track your culinary journey and community impact</p>
+    </div>
+    
+    <!-- Performance Stats Cards -->
+    <div class="dashboard-grid-enhanced">
+      <div class="stat-card-premium stat-recipes">
+        <div class="stat-icon-container">
+          <div class="stat-icon">🍳</div>
+        </div>
+        <div class="stat-content">
+          <h3>Recipes Posted</h3>
+          <div class="stat-value" id="statRecipes">0</div>
+          <div class="stat-trend">+3 this week</div>
+        </div>
+      </div>
+      <div class="stat-card-premium stat-likes">
+        <div class="stat-icon-container">
+          <div class="stat-icon">❤️</div>
+        </div>
+        <div class="stat-content">
+          <h3>Total Likes</h3>
+          <div class="stat-value" id="statLikes">0</div>
+          <div class="stat-trend">+124 this week</div>
+        </div>
+      </div>
+      <div class="stat-card-premium stat-rating">
+        <div class="stat-icon-container">
+          <div class="stat-icon">⭐</div>
+        </div>
+        <div class="stat-content">
+          <h3>Avg Rating</h3>
+          <div class="stat-value" id="statRating">0</div>
+          <div class="stat-trend">from 87 ratings</div>
+        </div>
+      </div>
+      <div class="stat-card-premium stat-followers">
+        <div class="stat-icon-container">
+          <div class="stat-icon">👥</div>
+        </div>
+        <div class="stat-content">
+          <h3>Followers</h3>
+          <div class="stat-value" id="statFollowers">0</div>
+          <div class="stat-trend">+12 this week</div>
+        </div>
+      </div>
+      <div class="stat-card-premium stat-views">
+        <div class="stat-icon-container">
+          <div class="stat-icon">👁️</div>
+        </div>
+        <div class="stat-content">
+          <h3>Total Views</h3>
+          <div class="stat-value" id="statViews">0</div>
+          <div class="stat-trend">across all recipes</div>
+        </div>
+      </div>
+      <div class="stat-card-premium stat-comments">
+        <div class="stat-icon-container">
+          <div class="stat-icon">💬</div>
+        </div>
+        <div class="stat-content">
+          <h3>Comments</h3>
+          <div class="stat-value" id="statComments">0</div>
+          <div class="stat-trend">community engagement</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Your Journey - Level & Progress -->
+    <div class="dashboard-section journey-section">
+      <h2>🎖️ Your Culinary Journey</h2>
+      <div class="journey-container">
+        <div class="level-display">
+          <div class="level-badge" id="userLevel">Novice Chef</div>
+          <div class="points-display">
+            <strong id="userPoints">0</strong> points
+          </div>
+          <div class="level-progress-bar">
+            <div class="level-progress-fill" id="levelProgress"></div>
+          </div>
+          <p class="level-next">Next level at 50 points</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Achievements & Badges Showcase -->
+    <div class="dashboard-section badges-section">
+      <h2>🏆 Your Achievements</h2>
+      <div class="badges-wall" id="userBadges">
+        <div class="badge-placeholder">
+          <div class="badge-lock">🔒</div>
+          <p>Start posting to unlock badges!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="charts-row">
+      <!-- Views Over Time -->
+      <div class="chart-card">
+        <h3>📈 Recipe Views Over Time</h3>
+        <p class="chart-subtitle">Last 7 days performance</p>
+        <canvas id="activityChart"></canvas>
+      </div>
+      
+      <!-- Engagement Breakdown -->
+      <div class="chart-card">
+        <h3>📊 Engagement Distribution</h3>
+        <p class="chart-subtitle">Likes, Comments & Saves</p>
+        <canvas id="engagementChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Recipe Performance Table -->
+    <div class="dashboard-section performance-section">
+      <h2>🔝 Top Performing Recipes</h2>
+      <div class="performance-table">
+        <table id="topRecipesTable">
+          <thead>
+            <tr>
+              <th>Recipe</th>
+              <th>Views</th>
+              <th>Likes</th>
+              <th>Rating</th>
+              <th>Comments</th>
+            </tr>
+          </thead>
+          <tbody id="topRecipesBody">
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 2rem;">
+                No recipes posted yet. Start creating!
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Community Impact -->
+    <div class="dashboard-section impact-section">
+      <h2>🌟 Community Impact</h2>
+      <div class="impact-grid">
+        <div class="impact-card">
+          <div class="impact-number" id="impactViews">0</div>
+          <p>People inspired by your recipes</p>
+        </div>
+        <div class="impact-card">
+          <div class="impact-number" id="impactSaves">0</div>
+          <p>Times your recipes were saved</p>
+        </div>
+        <div class="impact-card">
+          <div class="impact-number" id="impactShares">0</div>
+          <p>Recipes shared with friends</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity Timeline -->
+    <div class="dashboard-section timeline-section">
+      <h2>📅 Recent Activity</h2>
+      <div class="activity-timeline" id="activityTimeline">
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <p>Welcome to TasteLog! Start your culinary journey by posting your first recipe.</p>
+            <span class="timeline-time">Just now</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monthly Goals -->
+    <div class="dashboard-section goals-section">
+      <h2>🎯 Monthly Goals</h2>
+      <div class="goals-container">
+        <div class="goal-item" data-goal="recipes">
+          <div class="goal-header">
+            <span>Post 5 New Recipes</span>
+            <span class="goal-progress-text">0/5</span>
+          </div>
+          <div class="goal-progress-bar">
+            <div class="goal-progress-fill" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="goal-item" data-goal="likes">
+          <div class="goal-header">
+            <span>Reach 100 Likes</span>
+            <span class="goal-progress-text">0/100</span>
+          </div>
+          <div class="goal-progress-bar">
+            <div class="goal-progress-fill" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="goal-item" data-goal="followers">
+          <div class="goal-header">
+            <span>Get 50 New Followers</span>
+            <span class="goal-progress-text">0/50</span>
+          </div>
+          <div class="goal-progress-bar">
+            <div class="goal-progress-fill" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ====== HOME VIEW (Premium Content-Rich Experience) ====== -->
+  <div id="recipeList">
+    
+    <!-- Hero Section with Animated Background -->
+    <div class="hero-section">
+      <div class="hero-background"></div>
+      <div class="hero-content">
+        <h1 class="hero-title animate-fade-in">Welcome to TasteLog Premium 🌟</h1>
+        <p class="hero-subtitle animate-slide-up">Discover, Cook, and Share Amazing Recipes from Around the World</p>
+        <div class="hero-stats animate-slide-up delay-1">
+          <div class="hero-stat">
+            <div class="stat-number" id="heroRecipes">150+</div>
+            <div class="stat-label">Recipes</div>
+          </div>
+          <div class="hero-stat">
+            <div class="stat-number" id="heroChefs">50+</div>
+            <div class="stat-label">Chefs</div>
+          </div>
+          <div class="hero-stat">
+            <div class="stat-number" id="heroLikes">287K+</div>
+            <div class="stat-label">Likes</div>
+          </div>
+          <div class="hero-stat">
+            <div class="stat-number" id="heroViews">1.2M+</div>
+            <div class="stat-label">Views</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Community Stats Banner -->
+    <div class="community-banner">
+      <div class="banner-stat">
+        <i class="fas fa-fire"></i>
+        <span><strong id="weeklyRecipes">24</strong> new recipes this week</span>
+      </div>
+      <div class="banner-stat">
+        <i class="fas fa-users"></i>
+        <span><strong id="weeklyChefs">5</strong> new chefs joined</span>
+      </div>
+      <div class="banner-stat">
+        <i class="fas fa-heart"></i>
+        <span><strong id="weeklyLikes">12.4K</strong> likes this week</span>
+      </div>
+    </div>
+
+    <!-- Recipe of the Day Spotlight -->
+    <div class="recipe-of-day">
+      <div class="section-badge">⭐ RECIPE OF THE DAY</div>
+      <h2 class="section-title">Today's Featured Recipe</h2>
+      <div class="rotd-container" id="recipeOfDay"></div>
+    </div>
+
+    <!-- Trending Now -->
+    <div class="recipes-section trending-section">
+      <div class="section-header-fancy">
+        <div class="section-badge trending-badge">🔥 TRENDING</div>
+        <h2 class="section-title">What's Hot Right Now</h2>
+        <p class="section-subtitle">Most popular recipes trending this week</p>
+      </div>
+      <div class="trending-carousel" id="trendingSection"></div>
+    </div>
+
+    <!-- Staff Picks -->
+    <div class="recipes-section staff-picks-section">
+      <div class="section-header-fancy">
+        <div class="section-badge staff-badge">👨‍🍳 STAFF PICKS</div>
+        <h2 class="section-title">Editor's Choice</h2>
+        <p class="section-subtitle">Hand-picked by our culinary team</p>
+      </div>
+      <div class="staff-picks-grid" id="staffPicks"></div>
+    </div>
+
+    <!-- Quick Wins - Under 15 Minutes -->
+    <div class="recipes-section quick-section">
+      <div class="section-header-fancy">
+        <div class="section-badge quick-badge">⚡ QUICK WINS</div>
+        <h2 class="section-title">Ready in 15 Minutes or Less</h2>
+        <p class="section-subtitle">Fast, delicious recipes for busy days</p>
+      </div>
+      <div class="recipes-carousel" id="quickWins"></div>
+    </div>
+
+    <!-- Vegetarian Heaven -->
+    <div class="recipes-section veg-section">
+      <div class="section-header-fancy">
+        <div class="section-badge veg-badge">🌱 VEGETARIAN</div>
+        <h2 class="section-title">Plant-Powered Delights</h2>
+        <p class="section-subtitle">25+ amazing vegetarian recipes</p>
+      </div>
+      <div class="recipes-grid" id="vegRecipes"></div>
+      <button class="view-more-btn" data-category="Vegetarian">View All Vegetarian Recipes →</button>
+    </div>
+
+    <!-- Non-Veg Paradise -->
+    <div class="recipes-section nonveg-section">
+      <div class="section-header-fancy">
+        <div class="section-badge nonveg-badge">🍖 NON-VEGETARIAN</div>
+        <h2 class="section-title">Meat Lovers' Paradise</h2>
+        <p class="section-subtitle">25+ premium meat & seafood dishes</p>
+      </div>
+      <div class="recipes-grid" id="nonVegRecipes"></div>
+      <button class="view-more-btn" data-category="Non-Veg">View All Non-Veg Recipes →</button>
+    </div>
+
+    <!-- Quick Recipes -->
+    <div class="recipes-section quick-all-section">
+      <div class="section-header-fancy">
+        <div class="section-badge quick-badge">⚡ QUICK & EASY</div>
+        <h2 class="section-title">30 Minutes or Less</h2>
+        <p class="section-subtitle">25+ recipes for busy weeknights</p>
+      </div>
+      <div class="recipes-grid" id="quickRecipes"></div>
+      <button class="view-more-btn" data-category="Quick Recipes">View All Quick Recipes →</button>
+    </div>
+
+    <!-- Vegan Collection -->
+    <div class="recipes-section vegan-section">
+      <div class="section-header-fancy">
+        <div class="section-badge vegan-badge">🥗 VEGAN</div>
+        <h2 class="section-title">100% Plant-Based</h2>
+        <p class="section-subtitle">25+ delicious vegan creations</p>
+      </div>
+      <div class="recipes-grid" id="veganRecipes"></div>
+      <button class="view-more-btn" data-category="Vegan">View All Vegan Recipes →</button>
+    </div>
+
+    <!-- Seasonal Favorites -->
+    <div class="recipes-section seasonal-section">
+      <div class="section-header-fancy">
+        <div class="section-badge seasonal-badge">🍂 SEASONAL</div>
+        <h2 class="section-title">Season's Best</h2>
+        <p class="section-subtitle">Perfect for this time of year</p>
+      </div>
+      <div class="recipes-carousel" id="seasonalRecipes"></div>
+    </div>
+
+    <!-- Recently Viewed -->
+    <div class="recipes-section recent-section hidden" id="recentSection">
+      <div class="section-header-fancy">
+        <div class="section-badge recent-badge">👁️ RECENTLY VIEWED</div>
+        <h2 class="section-title">Your Browsing History</h2>
+        <p class="section-subtitle">Pick up where you left off</p>
+      </div>
+      <div class="recipes-carousel" id="recentlyViewed"></div>
+    </div>
+
+  </div>
+
+  <!-- ====== MY RECIPES VIEW ====== -->
+  <div id="myRecipesView" class="hidden">
+    <div class="recipes-section">
+      <h2>My Recipes 📖</h2>
+      <div class="recipes-container" id="myRecipesContainer"></div>
+    </div>
+  </div>
+
+  <!-- ====== EXPLORE VIEW ====== -->
+  <div id="exploreView" class="hidden">
+    <!-- Hero Banner -->
+    <div class="explore-hero">
+      <div class="explore-hero-content">
+        <h1 class="text-gradient">Discover Amazing Recipes</h1>
+        <p>Explore trending dishes, cuisines from around the world, and connect with talented chefs</p>
+      </div>
+    </div>
+
+    <!-- Trending Section -->
+    <div class="recipes-section">
+      <div class="section-header">
+        <h2>🔥 Trending Now</h2>
+        <p class="section-subtitle">Most popular recipes this week</p>
+      </div>
+      <div class="trending-container" id="trendingRecipes"></div>
+    </div>
+
+    <!-- Categories Grid - EXPANDED to 20+ Cuisines -->
+    <div class="recipes-section">
+      <div class="section-header">
+        <h2>🌍 Browse by Cuisine</h2>
+        <p class="section-subtitle">Explore recipes from 20+ different cultures</p>
+      </div>
+      <div class="cuisine-grid-expanded">
+        <div class="cuisine-card-fancy" data-cuisine="Italian">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);"></div>
+          <div class="cuisine-icon">🍝</div>
+          <h3>Italian</h3>
+          <p>Pasta, Pizza, Risotto</p>
+          <span class="recipe-count" data-count-cuisine="Italian">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="Mexican">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #fdeb71 0%, #f8d800 100%);"></div>
+          <div class="cuisine-icon">🌮</div>
+          <h3>Mexican</h3>
+          <p>Tacos, Enchiladas, Mole</p>
+          <span class="recipe-count" data-count-cuisine="Mexican">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="Chinese">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);"></div>
+          <div class="cuisine-icon">🥢</div>
+          <h3>Chinese</h3>
+          <p>Stir Fry, Dumplings, Noodles</p>
+          <span class="recipe-count" data-count-cuisine="Chinese">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="Indian">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);"></div>
+          <div class="cuisine-icon">🍛</div>
+          <h3>Indian</h3>
+          <p>Curries, Biryani, Tandoori</p>
+          <span class="recipe-count" data-count-cuisine="Indian">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="Japanese">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);"></div>
+          <div class="cuisine-icon">🍣</div>
+          <h3>Japanese</h3>
+          <p>Sushi, Ramen, Tempura</p>
+          <span class="recipe-count" data-count-cuisine="Japanese">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="Thai">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+          <div class="cuisine-icon">🍜</div>
+          <h3>Thai</h3>
+          <p>Pad Thai, Curries, Som Tum</p>
+          <span class="recipe-count" data-count-cuisine="Thai">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="Mediterranean">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
+          <div class="cuisine-icon">🥗</div>
+          <h3>Mediterranean</h3>
+          <p>Greek, Turkish, Lebanese</p>
+          <span class="recipe-count" data-count-cuisine="Mediterranean">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="American">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);"></div>
+          <div class="cuisine-icon">🍔</div>
+          <h3>American</h3>
+          <p>Burgers, BBQ, Mac & Cheese</p>
+          <span class="recipe-count" data-count-cuisine="American">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="French">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);"></div>
+          <div class="cuisine-icon">🥐</div>
+          <h3>French</h3>
+          <p>Croissants, Coq au Vin, Ratatouille</p>
+          <span class="recipe-count" data-count-cuisine="French">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="Spanish">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);"></div>
+          <div class="cuisine-icon">🥘</div>
+          <h3>Spanish</h3>
+          <p>Paella, Tapas, Gazpacho</p>
+          <span class="recipe-count" data-count-cuisine="Spanish">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="Korean">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);"></div>
+          <div class="cuisine-icon">🍲</div>
+          <h3>Korean</h3>
+          <p>Kimchi, Bibimbap, Korean BBQ</p>
+          <span class="recipe-count" data-count-cuisine="Korean">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="Middle Eastern">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #ff6e7f 0%, #bfe9ff 100%);"></div>
+          <div class="cuisine-icon">🥙</div>
+          <h3>Middle Eastern</h3>
+          <p>Falafel, Hummus, Shawarma</p>
+          <span class="recipe-count" data-count-cuisine="Middle Eastern">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="Greek">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);"></div>
+          <div class="cuisine-icon">🍝</div>
+          <h3>Greek</h3>
+          <p>Moussaka, Souvlaki, Tzatziki</p>
+          <span class="recipe-count" data-count-cuisine="Greek">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="Vietnamese">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);"></div>
+          <div class="cuisine-icon">🍛</div>
+          <h3>Vietnamese</h3>
+          <p>Pho, Banh Mi, Spring Rolls</p>
+          <span class="recipe-count" data-count-cuisine="Vietnamese">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="Caribbean">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #fad961 0%, #f76b1c 100%);"></div>
+          <div class="cuisine-icon">🌯</div>
+          <h3>Caribbean</h3>
+          <p>Jerk Chicken, Rice & Peas, Plantains</p>
+          <span class="recipe-count" data-count-cuisine="Caribbean">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="German">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);"></div>
+          <div class="cuisine-icon">🥨</div>
+          <h3>German</h3>
+          <p>Schnitzel, Bratwurst, Pretzels</p>
+          <span class="recipe-count" data-count-cuisine="German">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="Brazilian">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #f77062 0%, #fe5196 100%);"></div>
+          <div class="cuisine-icon">🍕</div>
+          <h3>Brazilian</h3>
+          <p>Feijoada, Pão de Queijo, Brigadeiro</p>
+          <span class="recipe-count" data-count-cuisine="Brazilian">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="Polish">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #c471f5 0%, #fa71cd 100%);"></div>
+          <div class="cuisine-icon">🥟</div>
+          <h3>Polish</h3>
+          <p>Pierogi, Bigos, Kielbasa</p>
+          <span class="recipe-count" data-count-cuisine="Polish">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="Malaysian">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+          <div class="cuisine-icon">🍜</div>
+          <h3>Malaysian</h3>
+          <p>Laksa, Rendang, Satay</p>
+          <span class="recipe-count" data-count-cuisine="Malaysian">0 recipes</span>
+        </div>
+        <div class="cuisine-card-fancy" data-cuisine="Ethiopian">
+          <div class="cuisine-bg" style="background: linear-gradient(135deg, #f794a4 0%, #fdd6bd 100%);"></div>
+          <div class="cuisine-icon">🥘</div>
+          <h3>Ethiopian</h3>
+          <p>Injera, Doro Wat, Kitfo</p>
+          <span class="recipe-count" data-count-cuisine="Ethiopian">0 recipes</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dietary Filters & Meal Types -->
+    <div class="recipes-section">
+      <div class="section-header">
+        <h2>🥗 Browse by Diet & Meal Type</h2>
+        <p class="section-subtitle">Find recipes that match your lifestyle</p>
+      </div>
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="all">All Recipes</button>
+        <button class="filter-tab" data-filter="Vegan">🌱 Vegan</button>
+        <button class="filter-tab" data-filter="Vegetarian">🥬 Vegetarian</button>
+        <button class="filter-tab" data-filter="Keto">🥑 Keto</button>
+        <button class="filter-tab" data-filter="Paleo">🦴 Paleo</button>
+        <button class="filter-tab" data-filter="Gluten-Free">🌾 Gluten-Free</button>
+        <button class="filter-tab" data-filter="Breakfast">🌅 Breakfast</button>
+        <button class="filter-tab" data-filter="Lunch">🍽️ Lunch</button>
+        <button class="filter-tab" data-filter="Dinner">🌙 Dinner</button>
+        <button class="filter-tab" data-filter="Dessert">🍰 Dessert</button>
+      </div>
+    </div>
+
+    <!-- Special Collections -->
+    <div class="recipes-section">
+      <div class="section-header">
+        <h2>✨ Special Collections</h2>
+        <p class="section-subtitle">Curated recipe collections for every occasion</p>
+      </div>
+      <div class="collections-grid">
+        <div class="collection-card" data-collection="one-pot">
+          <h3>🍲 One-Pot Wonders</h3>
+          <p>Minimal cleanup, maximum flavor</p>
+          <span class="collection-count">15+ recipes</span>
+        </div>
+        <div class="collection-card" data-collection="meal-prep">
+          <h3>📦 Meal Prep Masters</h3>
+          <p>Batch cooking made easy</p>
+          <span class="collection-count">12+ recipes</span>
+        </div>
+        <div class="collection-card" data-collection="budget">
+          <h3>💰 Budget-Friendly</h3>
+          <p>Delicious on a dime</p>
+          <span class="collection-count">20+ recipes</span>
+        </div>
+        <div class="collection-card" data-collection="date-night">
+          <h3>💕 Fancy Date Night</h3>
+          <p>Impress your special someone</p>
+          <span class="collection-count">10+ recipes</span>
+        </div>
+        <div class="collection-card" data-collection="quick">
+          <h3>⚡ 15-Minute Meals</h3>
+          <p>Fast food, done right</p>
+          <span class="collection-count">18+ recipes</span>
+        </div>
+        <div class="collection-card" data-collection="comfort">
+          <h3>🏠 Comfort Food</h3>
+          <p>Warm your soul</p>
+          <span class="collection-count">25+ recipes</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Difficulty Levels -->
+    <div class="recipes-section">
+      <div class="section-header">
+        <h2>📊 Browse by Difficulty</h2>
+        <p class="section-subtitle">From beginner to master chef</p>
+      </div>
+      <div class="difficulty-grid">
+        <div class="difficulty-card easy-card" data-difficulty="Easy">
+          <div class="difficulty-icon">😊</div>
+          <h3>Easy</h3>
+          <p>Perfect for beginners</p>
+          <span class="difficulty-count" id="easyCount">0 recipes</span>
+        </div>
+        <div class="difficulty-card medium-card" data-difficulty="Medium">
+          <div class="difficulty-icon">🤔</div>
+          <h3>Medium</h3>
+          <p>Some skill required</p>
+          <span class="difficulty-count" id="mediumCount">0 recipes</span>
+        </div>
+        <div class="difficulty-card hard-card" data-difficulty="Hard">
+          <div class="difficulty-icon">🏆</div>
+          <h3>Hard</h3>
+          <p>For experienced cooks</p>
+          <span class="difficulty-count" id="hardCount">0 recipes</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Featured Chefs - EXPANDED -->
+    <div class="recipes-section">
+      <div class="section-header">
+        <h2>👨‍🍳 Featured Chefs</h2>
+        <p class="section-subtitle">Meet our top contributors - 50+ talented chefs</p>
+      </div>
+      <div class="chef-tabs">
+        <button class="chef-tab active" data-tab="all">All Chefs</button>
+        <button class="chef-tab" data-tab="chef-of-month">⭐ Chef of the Month</button>
+        <button class="chef-tab" data-tab="rising-stars">🌟 Rising Stars</button>
+        <button class="chef-tab" data-tab="hall-of-fame">🏆 Hall of Fame</button>
+      </div>
+      <div class="chefs-grid" id="featuredChefs"></div>
+      <button class="view-more-btn" id="viewMoreChefs">View All 50+ Chefs →</button>
+    </div>
+
+    <!-- Latest Recipes -->
+    <div class="recipes-section">
+      <div class="section-header">
+        <h2>✨ Latest Recipes</h2>
+        <p class="section-subtitle">Fresh from the kitchen - 30+ newest additions</p>
+      </div>
+      <div class="recipes-container" id="latestRecipes"></div>
+    </div>
+
+    <!-- Most Saved Recipes -->
+    <div class="recipes-section">
+      <div class="section-header">
+        <h2>📌 Most Saved</h2>
+        <p class="section-subtitle">Community favorites everyone bookmarks</p>
+      </div>
+      <div class="recipes-container" id="mostSaved"></div>
+    </div>
+
+    <!-- Viral This Week -->
+    <div class="recipes-section">
+      <div class="section-header">
+        <h2>🚀 Viral This Week</h2>
+        <p class="section-subtitle">Recipes with exponential growth</p>
+      </div>
+      <div class="recipes-container" id="viralRecipes"></div>
+    </div>
+
+  </div>
+
+  <!-- Floating Add Recipe Button -->
+  <button id="addRecipeBtn" class="floating-btn">＋</button>
+
+  <!-- ====== ADD/EDIT RECIPE MODAL ====== -->
+  <div id="recipeModal" class="modal hidden">
+    <div class="modal-content">
+      <span id="closeModal">&times;</span>
+      <h2 id="recipeModalTitle">Add New Recipe 🍰</h2>
+
+      <input id="recipeName" placeholder="Recipe Name" required>
+      <textarea id="ingredients" placeholder="Ingredients (comma separated)" rows="4" required></textarea>
+      <textarea id="instructions" placeholder="Instructions" rows="6" required></textarea>
+
+      <label style="font-weight: 600; margin-top: 1rem; display: block;">Cuisine</label>
+      <select id="cuisine">
+        <option value="">--Select Cuisine--</option>
+        <option>Italian</option>
+        <option>Mexican</option>
+        <option>Chinese</option>
+        <option>Indian</option>
+        <option>Thai</option>
+        <option>Japanese</option>
+        <option>Mediterranean</option>
+        <option>American</option>
+        <option>French</option>
+      </select>
+
+      <label style="font-weight: 600; margin-top: 1rem; display: block;">Difficulty</label>
+      <select id="difficulty">
+        <option>Easy</option>
+        <option selected>Medium</option>
+        <option>Hard</option>
+      </select>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+        <div>
+          <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Cook Time (min)</label>
+          <input id="cookTime" type="number" placeholder="30">
+        </div>
+        <div>
+          <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Calories</label>
+          <input id="calories" type="number" placeholder="350">
+        </div>
+        <div>
+          <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Servings</label>
+          <input id="servings" type="number" placeholder="4" value="4">
+        </div>
+      </div>
+
+      <label style="font-weight: 600; margin-top: 1rem; display: block;">Tags</label>
+      <div id="tag-buttons" class="tag-buttons">
+        <button type="button" class="tag-btn" data-tag="Veg">🌱 Veg</button>
+        <button type="button" class="tag-btn" data-tag="Non-Veg">🍖 Non-Veg</button>
+        <button type="button" class="tag-btn" data-tag="Quick">⚡ Quick</button>
+        <button type="button" class="tag-btn" data-tag="Vegan">🥗 Vegan</button>
+        <button type="button" class="tag-btn" data-tag="Healthy">💪 Healthy</button>
+        <button type="button" class="tag-btn" data-tag="Breakfast">🌅 Breakfast</button>
+        <button type="button" class="tag-btn" data-tag="Lunch">🍽️ Lunch</button>
+        <button type="button" class="tag-btn" data-tag="Dinner">🌙 Dinner</button>
+      </div>
+
+      <input id="imageUrl" placeholder="Image URL (optional)">
+      <button id="postRecipeBtn">Post Recipe</button>
+    </div>
+  </div>
+
+  <!-- ====== RECIPE DETAIL MODAL ====== -->
+  <div id="recipeDetailModal" class="modal hidden">
+    <div class="modal-content">
+      <span id="closeDetailModal">&times;</span>
+      <h2 id="detailName"></h2>
+      <img id="detailImage" src="" alt="Recipe" style="width: 100%; border-radius: 15px; margin: 1rem 0;">
+      
+      <!-- Recipe Info -->
+      <div style="display: flex; gap: 1.5rem; margin: 1rem 0; flex-wrap: wrap;">
+        <span><strong>⏱️ Cook Time:</strong> <span id="detailCookTime">-</span> min</span>
+        <span><strong>🔥 Calories:</strong> <span id="detailCalories">-</span></span>
+        <span><strong>👥 Servings:</strong> <span id="detailServings">-</span></span>
+        <span><strong>📊 Difficulty:</strong> <span id="detailDifficulty">-</span></span>
+      </div>
+
+      <div style="margin: 1.5rem 0;">
+        <h3>Ingredients</h3>
+        <p id="detailIngredients" style="white-space: pre-line; margin-top: 0.5rem;"></p>
+      </div>
+
+      <div style="margin: 1.5rem 0;">
+        <h3>Instructions</h3>
+        <p id="detailInstructions" style="white-space: pre-line; margin-top: 0.5rem;"></p>
+      </div>
+
+      <div style="margin: 1.5rem 0;">
+        <p><b>Cuisine:</b> <span id="detailCuisine"></span></p>
+      </div>
+
+      <!-- Actions -->
+      <div id="recipeActions" style="display: flex; gap: 1rem; margin: 1.5rem 0; flex-wrap: wrap;">
+        <button id="likeBtn" style="flex: 1; min-width: 120px;">
+          <i class="fas fa-heart"></i> Like (<span id="likeCount">0</span>)
+        </button>
+        <button id="favoriteBtn" style="flex: 1; min-width: 120px;">
+          <i class="fas fa-bookmark"></i> Save
+        </button>
+        <button id="shareBtn" style="flex: 1; min-width: 120px;">
+          <i class="fas fa-share"></i> Share
+        </button>
+        <span style="flex: 1; text-align: center; min-width: 120px;">
+          ⭐ Rating: <strong id="avgRating">0</strong> (<span id="ratingsCount">0</span>)
+        </span>
+      </div>
+
+      <!-- Rate Recipe -->
+      <div style="margin: 1.5rem 0;">
+        <h3>Rate this Recipe</h3>
+        <div id="ratingStars" style="font-size: 2rem; cursor: pointer; margin-top: 0.5rem;">
+          <i class="far fa-star" data-rating="1"></i>
+          <i class="far fa-star" data-rating="2"></i>
+          <i class="far fa-star" data-rating="3"></i>
+          <i class="far fa-star" data-rating="4"></i>
+          <i class="far fa-star" data-rating="5"></i>
+        </div>
+      </div>
+
+      <!-- Comments -->
+      <div id="commentsSection" style="margin-top: 2rem;">
+        <h3>Comments</h3>
+        <div id="commentsList" style="max-height: 300px; overflow-y: auto; margin: 1rem 0;"></div>
+        <textarea id="commentInput" placeholder="Add a comment..." rows="3"></textarea>
+        <button id="commentBtn" style="margin-top: 0.5rem;">Post Comment</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== NOTIFICATIONS PANEL ====== -->
+  <div id="notificationsPanel" class="modal hidden">
+    <div class="modal-content">
+      <span id="closeNotifications">&times;</span>
+      <h2>Notifications</h2>
+      <div id="notificationsList"></div>
+    </div>
+  </div>
+
+  <!-- ====== VIEW ALL RECIPES MODAL ====== -->
+  <div id="viewAllModal" class="modal hidden">
+    <div class="modal-content" style="max-width: 1200px; max-height: 90vh; overflow-y: auto;">
+      <span id="closeViewAll" class="close-modal">&times;</span>
+      <h2 id="viewAllTitle">All Recipes</h2>
+      <p id="viewAllCount" style="color: #888; margin-bottom: 2rem;"></p>
+      <div id="viewAllGrid" class="recipes-grid"></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- Load Sample Data First -->
+<script src="data.js"></script>
+<!-- Load Main App Script -->
+<script src="script.js"></script>
+
+</body>
+</html>

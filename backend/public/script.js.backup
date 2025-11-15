@@ -1,0 +1,324 @@
+let authToken = null;
+let isSignup = false;
+let allRecipes = [];
+let currentDetailRecipe = null;
+
+// --- Navigation ---
+document.getElementById("loginBtnNav").onclick = () => showAuth(false);
+document.getElementById("signupBtnNav").onclick = () => showAuth(true);
+document.getElementById("getStarted").onclick = () => showAuth(false);
+
+function showAuth(signup) {
+  isSignup = signup;
+  document.getElementById("landing").classList.add("hidden");
+  document.getElementById("auth").classList.remove("hidden");
+  document.getElementById("authTitle").innerText = signup ? "Sign Up" : "Login";
+  document.getElementById("authSubmit").innerText = signup ? "Sign Up" : "Login";
+  document.getElementById("switchAuth").innerHTML = signup
+    ? 'Already have an account? <span>Login</span>'
+    : "Don't have an account? <span>Sign Up</span>";
+}
+
+document.getElementById("switchAuth").onclick = () => showAuth(!isSignup);
+
+// --- Auth Submit ---
+document.getElementById("authSubmit").onclick = async () => {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  const endpoint = isSignup ? "/api/users/signup" : "/api/users/login";
+  const body = isSignup
+    ? { username: email.split("@")[0], email, password }
+    : { email, password };
+
+  const res = await fetch(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+
+  const data = await res.json();
+  if (data.token || data.message === "User registered successfully!") {
+    if (data.token) authToken = data.token;
+    showMainApp();
+  } else alert(data.error || data.message);
+};
+
+// --- Show Main App ---
+function showMainApp() {
+  document.getElementById("auth").classList.add("hidden");
+  document.getElementById("mainApp").classList.remove("hidden");
+  fetchRecipes();
+  updateNavbarAfterLogin();
+}
+
+// --- Navbar Profile ---
+function updateNavbarAfterLogin() {
+  document.getElementById("loginBtnNav").style.display = "none";
+  document.getElementById("signupBtnNav").style.display = "none";
+}
+
+// --- Fetch Recipes ---
+async function fetchRecipes() {
+  const res = await fetch("/api/recipes");
+  const recipes = await res.json();
+  allRecipes = recipes;
+  renderHomepageSections();
+}
+
+// --- Render Homepage Sections ---
+// --- Render Homepage Sections into the static containers in index.html ---
+function renderHomepageSections(recipes = allRecipes) {
+  // get the static containers
+  const allContainer = document.getElementById("allRecipes");
+  const vegContainer = document.getElementById("vegRecipes");
+  const nonVegContainer = document.getElementById("nonVegRecipes");
+  const quickContainer = document.getElementById("quickRecipes");
+  const veganContainer = document.getElementById("veganRecipes");
+  const main = document.getElementById("recipeList");
+
+  if (!main) return;
+
+  // clear the existing containers
+  [allContainer, vegContainer, nonVegContainer, quickContainer, veganContainer].forEach(
+    (c) => { if (c) c.innerHTML = ""; }
+  );
+
+  if (!recipes || recipes.length === 0) {
+    if (allContainer) allContainer.innerHTML = `<p style="text-align:center; color:#777;">No recipes found 🍰</p>`;
+    if (vegContainer) vegContainer.innerHTML = `<p style="text-align:center; color:#777;">No veg recipes found.</p>`;
+    if (nonVegContainer) nonVegContainer.innerHTML = `<p style="text-align:center; color:#777;">No non-veg recipes found.</p>`;
+    if (quickContainer) quickContainer.innerHTML = `<p style="text-align:center; color:#777;">No quick recipes found.</p>`;
+    if (veganContainer) veganContainer.innerHTML = `<p style="text-align:center; color:#777;">No vegan recipes found.</p>`;
+    return;
+  }
+
+  // helper to create a recipe card
+  const makeCard = (r) => `
+    <div class="recipe-card" data-id="${r.id}">
+      <img src="${r.image_url || "https://via.placeholder.com/300"}" alt="${r.name}">
+      <h3>${r.name}</h3>
+      <div class="recipe-actions">
+        <span>⭐ ${r.avgRating ? r.avgRating.toFixed(1) : "0"}</span>
+        <span>❤️ ${r.likes || 0}</span>
+      </div>
+    </div>`;
+
+  // ALL recipes
+  recipes.forEach(r => {
+    if (allContainer) allContainer.innerHTML += makeCard(r);
+  });
+
+  // categorize into containers
+  recipes.forEach(r => {
+    const tagList = (r.tags || "").split(",").map(t => t.trim().toLowerCase()).filter(Boolean);
+    const categoryName = (r.category || "").toLowerCase();
+
+    // Veg
+    if ((tagList.includes("veg") || /veg|vegetarian/i.test(r.tags)) && !/non/i.test(r.tags)) {
+      if (vegContainer) vegContainer.innerHTML += makeCard(r);
+    }
+
+    // Non-Veg
+    if (tagList.includes("non-veg") || /non[- ]?veg/i.test(r.tags)) {
+      if (nonVegContainer) nonVegContainer.innerHTML += makeCard(r);
+    }
+
+    // Quick
+    if (tagList.includes("quick") || /quick/i.test(r.tags) || /quick/i.test(categoryName)) {
+      if (quickContainer) quickContainer.innerHTML += makeCard(r);
+    }
+
+    // Vegan
+    if (tagList.includes("vegan") || /vegan/i.test(r.tags) || /vegan/i.test(categoryName)) {
+      if (veganContainer) veganContainer.innerHTML += makeCard(r);
+    }
+  });
+
+  // Show message if empty
+  [
+    { node: allContainer, name: "recipes" },
+    { node: vegContainer, name: "veg recipes" },
+    { node: nonVegContainer, name: "non-veg recipes" },
+    { node: quickContainer, name: "quick recipes" },
+    { node: veganContainer, name: "vegan recipes" },
+  ].forEach(c => {
+    if (c.node && c.node.children.length === 0) {
+      c.node.innerHTML = `<p style="text-align:center; color:#777;">No ${c.name} found.</p>`;
+    }
+  });
+
+  // attach click handlers
+  setupRecipeCardClicks();
+}
+
+
+// --- Recipe Card Click ---
+// --- Recipe Card Click ---
+function setupRecipeCardClicks() {
+  // ensure we remove old listeners by reassigning onclick (simple & safe)
+  document.querySelectorAll(".recipe-card").forEach((card) => {
+    card.onclick = (e) => {
+      if (e.target.tagName === "BUTTON" || e.target.tagName === "SELECT") return;
+      const id = card.dataset.id;
+      openRecipeDetail(id);
+    };
+  });
+}
+
+
+// --- Recipe Detail Modal ---
+async function openRecipeDetail(id) {
+  const recipe = allRecipes.find((r) => r.id == id);
+  if (!recipe) return;
+
+  currentDetailRecipe = recipe;
+  document.getElementById("detailName").innerText = recipe.name;
+  document.getElementById("detailImage").src =
+    recipe.image_url || "https://via.placeholder.com/300";
+  document.getElementById("detailIngredients").innerText = recipe.ingredients;
+  document.getElementById("detailInstructions").innerText = recipe.instructions;
+  document.getElementById("detailCuisine").innerText = recipe.category;
+
+  // --- Likes ---
+  document.getElementById("likeCount").innerText = recipe.likes || 0;
+  const likeBtn = document.getElementById("likeBtn");
+  likeBtn.onclick = async () => {
+    if (!authToken) return alert("Login to like 🍰");
+    const res = await fetch(`/api/recipes/${recipe.id}/like`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${authToken}` },
+    });
+    const data = await res.json();
+    document.getElementById("likeCount").innerText = data.likesCount;
+  };
+
+  // --- Rating ---
+  document.getElementById("avgRating").innerText = recipe.avgRating
+    ? recipe.avgRating.toFixed(1)
+    : "0";
+  document.getElementById("ratingsCount").innerText =
+    recipe.ratingsCount || 0;
+
+  // --- Comments ---
+  const commentsList = document.getElementById("commentsList");
+  commentsList.innerHTML = recipe.comments
+    ? recipe.comments
+        .map((c) => `<p><b>${c.username}</b>: ${c.comment}</p>`)
+        .join("")
+    : "";
+
+  document.getElementById("commentBtn").onclick = async () => {
+    const text = document.getElementById("commentInput").value.trim();
+    if (!text) return alert("Type something 🍰");
+    if (!authToken) return alert("Login to comment 🍰");
+
+    const res = await fetch(`/api/recipes/${recipe.id}/comment`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ comment: text }),
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      document.getElementById("commentInput").value = "";
+      commentsList.innerHTML = data.comments
+        .map((c) => `<p><b>${c.username}</b>: ${c.comment}</p>`)
+        .join("");
+    } else alert("Failed 😔");
+  };
+
+  // --- Modal behavior ---
+  const modal = document.getElementById("recipeDetailModal");
+  modal.classList.remove("hidden");
+  document.getElementById("closeDetailModal").onclick = () =>
+    modal.classList.add("hidden");
+  modal.onclick = (e) => {
+    if (e.target === modal) modal.classList.add("hidden");
+  };
+}
+
+// --- Add Recipe Modal ---
+const addRecipeBtn = document.getElementById("addRecipeBtn");
+const recipeModal = document.getElementById("recipeModal");
+const closeModal = document.getElementById("closeModal");
+
+if (addRecipeBtn && recipeModal && closeModal) {
+  addRecipeBtn.addEventListener("click", () =>
+    recipeModal.classList.remove("hidden")
+  );
+  closeModal.addEventListener("click", () =>
+    recipeModal.classList.add("hidden")
+  );
+  window.addEventListener("click", (e) => {
+    if (e.target === recipeModal) recipeModal.classList.add("hidden");
+  });
+}
+
+// --- Tag Selection ---
+document.querySelectorAll(".tag-btn").forEach((btn) => {
+  btn.addEventListener("click", () => btn.classList.toggle("selected"));
+});
+
+// --- Add Recipe Submit ---
+const submitRecipeBtn = document.getElementById("postRecipeBtn");
+if (submitRecipeBtn) {
+  submitRecipeBtn.onclick = async () => {
+    const name = document.getElementById("recipeName").value.trim();
+    const ingredients = document.getElementById("ingredients").value.trim();
+    const instructions = document.getElementById("instructions").value.trim();
+    const category = document.getElementById("cuisine").value.trim();
+    const tags = Array.from(
+      document.querySelectorAll(".tag-btn.selected")
+    )
+      .map((b) => b.dataset.tag)
+      .join(",");
+    const image_url = document.getElementById("imageUrl").value.trim();
+
+    if (!name || !ingredients || !instructions) {
+      alert("Please fill all required fields 🍰");
+      return;
+    }
+
+    const body = { name, ingredients, instructions, category, tags, image_url };
+    const res = await fetch("/api/recipes", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (res.ok) {
+      recipeModal.classList.add("hidden");
+      fetchRecipes();
+    } else alert("Failed to add recipe 😔");
+  };
+}
+
+// --- Search functionality ---
+const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
+
+if (searchInput && searchBtn) {
+  searchBtn.addEventListener("click", async () => {
+    const term = searchInput.value.trim();
+    if (!term) {
+      fetchRecipes(); // reset to all recipes if input empty
+      return;
+    }
+
+    // Call backend search
+    const res = await fetch(`/api/recipes/search?name=${encodeURIComponent(term)}&ingredients=${encodeURIComponent(term)}`);
+    if (!res.ok) return alert("Search failed 😔");
+    const filteredRecipes = await res.json();
+
+    // Render filtered recipes (update renderHomepageSections to accept array)
+    renderHomepageSections(filteredRecipes);
+  });
+}
+

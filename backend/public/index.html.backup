@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TasteLog 🍑</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://kit.fontawesome.com/a2d9a7e6b5.js"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      /* ✅ Fix modal covering */
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 9999; /* Ensure above navbar */
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* ✅ Profile icon visible and aligned */
+      .profile {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+
+      #profileIcon {
+        font-size: 2rem;
+        color: #444;
+        cursor: pointer;
+        margin-right: 1rem;
+      }
+
+      .profile-menu {
+        display: none;
+        position: absolute;
+        top: 40px;
+        right: 0;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        min-width: 130px;
+        z-index: 9999;
+      }
+
+      .profile-menu.show {
+        display: block;
+      }
+
+      .profile-menu a {
+        display: block;
+        padding: 10px;
+        text-decoration: none;
+        color: #333;
+        font-size: 0.9rem;
+      }
+
+      .profile-menu a:hover {
+        background: #f0f0f0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Landing Page -->
+    <section id="landing" class="landing">
+      <nav class="landing-nav">
+        <h1 class="logo"><i class="fas fa-utensils"></i> TasteLog</h1>
+        <div class="nav-buttons">
+          <button id="loginBtnNav" class="nav-btn">Login</button>
+          <button id="signupBtnNav" class="nav-btn">Sign Up</button>
+        </div>
+      </nav>
+
+      <div class="landing-content">
+        <h1>Welcome to TasteLog 🍓</h1>
+        <p>
+          A cozy pastel kitchen for your favorite recipes. <br />
+          Discover, share & rate delightful dishes.
+        </p>
+        <button id="getStarted" class="primary-btn">Get Started</button>
+      </div>
+    </section>
+
+    <!-- Login / Signup -->
+    <section id="auth" class="hidden auth-section">
+      <div class="auth-container">
+        <h2 id="authTitle">Login</h2>
+        <input id="email" type="email" placeholder="Email" />
+        <input id="password" type="password" placeholder="Password" />
+        <button id="authSubmit">Login</button>
+        <p id="switchAuth">
+          Don't have an account?
+          <span>Sign up</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- Main App -->
+    <section id="mainApp" class="hidden">
+      <!-- 🌿 Navbar -->
+      <nav class="navbar">
+        <div class="logo">
+          <i class="fas fa-utensils"></i>
+          <span>TasteLog</span>
+        </div>
+        <ul class="nav-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Popular</a></li>
+          <li><a href="#" id="postRecipeLink">Post Recipe</a></li>
+        </ul>
+        <div class="profile">
+          <i class="fas fa-user-circle" id="profileIcon"></i>
+          <div class="profile-menu" id="profileMenu">
+            <a href="#" id="myRecipesBtn">My Recipes</a>
+            <a href="#" id="logoutBtn">Logout</a>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Search -->
+      <div class="search-bar">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search recipes or ingredients..."
+        />
+        <button id="searchBtn"><i class="fas fa-search"></i></button>
+      </div>
+
+      <!-- Recipe Lists -->
+      <div id="recipeList">
+        <div class="recipes-section">
+          <h2>All Recipes</h2>
+          <div class="recipes-container" id="allRecipes"></div>
+        </div>
+
+        <div class="recipes-section">
+          <h2>Veg Recipes</h2>
+          <div class="recipes-container" id="vegRecipes"></div>
+        </div>
+
+        <div class="recipes-section">
+          <h2>Non-Veg Recipes</h2>
+          <div class="recipes-container" id="nonVegRecipes"></div>
+        </div>
+
+        <div class="recipes-section">
+          <h2>Quick Recipes</h2>
+          <div class="recipes-container" id="quickRecipes"></div>
+        </div>
+
+        <div class="recipes-section">
+          <h2>Vegan Recipes</h2>
+          <div class="recipes-container" id="veganRecipes"></div>
+        </div>
+      </div>
+
+      <!-- Add Recipe Button -->
+      <button id="addRecipeBtn" class="floating-btn">＋</button>
+
+      <!-- Add Recipe Modal -->
+      <div id="recipeModal" class="modal hidden">
+        <div class="modal-content">
+          <span id="closeModal">&times;</span>
+          <h2>Add New Recipe 🍰</h2>
+
+          <input id="recipeName" placeholder="Recipe Name" />
+          <textarea
+            id="ingredients"
+            placeholder="Ingredients (comma separated)"
+          ></textarea>
+          <textarea id="instructions" placeholder="Instructions"></textarea>
+
+          <label>Cuisine:</label>
+          <select id="cuisine">
+            <option value="">--Select--</option>
+            <option>Indian</option>
+            <option>Italian</option>
+            <option>Mexican</option>
+            <option>Chinese</option>
+            <option>Thai</option>
+            <option>Continental</option>
+          </select>
+
+          <p>Select Tags:</p>
+          <div id="tag-buttons">
+            <button type="button" class="tag-btn" data-tag="Veg">Veg</button>
+            <button type="button" class="tag-btn" data-tag="Non-Veg">Non-Veg</button>
+            <button type="button" class="tag-btn" data-tag="Quick">Quick</button>
+            <button type="button" class="tag-btn" data-tag="Vegan">Vegan</button>
+            <button type="button" class="tag-btn" data-tag="Healthy">Healthy</button>
+            <button type="button" class="tag-btn" data-tag="Breakfast">Breakfast</button>
+            <button type="button" class="tag-btn" data-tag="Lunch">Lunch</button>
+            <button type="button" class="tag-btn" data-tag="Dinner">Dinner</button>
+          </div>
+
+          <input id="imageUrl" placeholder="Image URL (optional)" />
+          <button id="postRecipeBtn">Post Recipe</button>
+        </div>
+      </div>
+
+      <!-- Recipe Detail Modal -->
+      <div id="recipeDetailModal" class="modal hidden">
+        <div class="modal-content">
+          <span id="closeDetailModal">&times;</span>
+          <h2 id="detailName"></h2>
+          <img id="detailImage" src="" alt="Recipe Image" class="detail-img" />
+          <p><b>Ingredients:</b></p>
+          <p id="detailIngredients"></p>
+          <p><b>Instructions:</b></p>
+          <p id="detailInstructions"></p>
+          <p><b>Cuisine:</b> <span id="detailCuisine"></span></p>
+          <div id="recipeActions" style="margin-top: 1rem;">
+            <button id="likeBtn">❤️ Like (<span id="likeCount">0</span>)</button>
+            <span style="margin-left: 1rem;">
+              ⭐ Rating: <span id="avgRating">0</span>
+              (<span id="ratingsCount">0</span>)
+            </span>
+          </div>
+          <div id="commentsSection" style="margin-top: 1rem;">
+            <h3>Comments</h3>
+            <div
+              id="commentsList"
+              style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 5px;"
+            ></div>
+            <textarea
+              id="commentInput"
+              placeholder="Add a comment..."
+              style="width: 100%; margin-top: 5px;"
+            ></textarea>
+            <button id="commentBtn" style="margin-top: 5px;">Post Comment</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script src="script.js"></script>
+
+    <script>
+      const profileIconElem = document.getElementById("profileIcon");
+      const profileMenuElem = document.getElementById("profileMenu");
+      const postRecipeLinkElem = document.getElementById("postRecipeLink");
+
+      if (profileIconElem) {
+        profileIconElem.onclick = () => {
+          profileMenuElem.classList.toggle("show");
+        };
+
+        window.onclick = (e) => {
+          if (!profileIconElem.contains(e.target)) {
+            profileMenuElem.classList.remove("show");
+          }
+        };
+      }
+
+      if (postRecipeLinkElem && recipeModal) {
+        postRecipeLinkElem.onclick = (e) => {
+          e.preventDefault();
+          recipeModal.classList.remove("hidden");
+        };
+      }
+    </script>
+  </body>
+</html>
